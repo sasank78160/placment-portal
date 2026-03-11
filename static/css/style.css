@@ -1,0 +1,326 @@
+/* body {
+    background: linear-gradient(to right, #eaf2f8, #f8fbff);
+    font-family: 'Segoe UI', sans-serif;
+}*/
+/* FULL PAGE BACKGROUND */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eaf4fb 0%, #d7e9f8 40%, #f5faff 100%);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Soft wave overlay */
+.bg-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background: radial-gradient(circle at 70% 30%, rgba(44,163,213,0.2), transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Left glow */
+.bg-wrapper::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 70%, rgba(31,95,159,0.2), transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Subtle dotted tech pattern */
+.bg-wrapper {
+    position: relative;
+    min-height: 100vh;
+    background-image: radial-gradient(rgba(31,95,159,0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* HEADER */
+
+.logo {
+    width: 150px;
+    height: 150px;
+}
+.top-header {
+   padding:0px;
+}
+
+
+.top-header h1 span {
+    color: #1f5f9f;
+}
+
+.top-header p {
+    color: #666;
+}
+
+/* MAIN */
+.main-section {
+    margin-top: 40px;
+}
+
+/* SLIDER CARD */
+/*.slider-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}*/
+
+/*.slider-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+    */
+
+/*.slide-img {
+    height: 420px;
+    object-fit: contain;
+    background-color: white;
+}
+    */
+    .slider-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    background: white;
+    position: relative;
+}
+
+.slider-card::before {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(44,163,213,0.25), transparent 70%);
+    top: -100px;
+    left: -100px;
+    z-index: -1;
+}
+    .slide-img {
+    width: 100%;
+    height: 75vh;
+}
+
+.slide-content {
+    height: 380px;
+    color: black;
+    padding: 50px;
+}
+
+.slide1 {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url("C:\Sasidhar\Placement_Portal\Images\slide2") center/cover no-repeat;
+}
+
+.slide2 {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url("C:\Sasidhar\Placement_Portal\Images\slide1") center/cover no-repeat;
+}
+
+/* LOGIN CARD */
+.login-card {
+    width: 600px;
+    height: 480px;
+    padding: 40px;
+    border-radius: 20px;
+
+    /* Glass effect */
+    background: rgba(20, 25, 50, 0.75);
+    backdrop-filter: blur(15px);
+
+    /* Neon Glow */
+    box-shadow:
+        0 0 20px rgba(0, 245, 255, 0.4),
+        0 0 40px rgba(161, 0, 255, 0.3);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    color: white;
+    transition: 0.4s ease;
+}
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: black;
+}
+
+.form-control::placeholder {
+    color:black(255, 255, 255, 0.7);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    box-shadow: 0 0 10px #00f5ff;
+}
+.input-group-text {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color:black;
+}
+
+/* Glow stronger on hover */
+.login-card:hover {
+    box-shadow:
+        0 0 30px rgba(0, 245, 255, 0.6),
+        0 0 60px rgba(161, 0, 255, 0.5);
+}
+
+.login-btn {
+    background: linear-gradient(90deg, #00f5ff, #a100ff, #ff00c8);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.4);
+}
+
+/* Glow on Hover */
+.login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 0 15px #00f5ff,
+        0 0 25px #a100ff,
+        0 0 40px #ff00c8;
+}
+
+/* Active click effect */
+.login-btn:active {
+    transform: scale(0.98);
+}
+.dropdown-style {
+    width: 200px;
+    border-radius: 15px;
+}
+
+
+
+/*.colour_of_coursel_slider{
+    color:black
+}*/
+
+
+
+.carousel-indicators [data-bs-target] {
+    box-sizing: content-box;
+    flex: 0 1 auto;
+    width: 30px;
+    height: 4px;
+    padding: 0px;
+    margin-right: 3px;
+    margin-left: 3px;
+    text-indent: -999px;
+    cursor: pointer;
+    background-color: #938282;
+    background-clip: padding-box;
+    border: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 28px solid #3f3a3a00;
+    opacity: 10.5;
+    transition: opacity 1.6s ease;
+}
+/* ========================= */
+/* REGISTRATION MODAL STYLE */
+/* ========================= */
+
+.modal-content {
+    background: linear-gradient(135deg, #f8fbff, #eaf4fb);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 0 30px rgba(44, 163, 213, 0.4);
+}
+
+/* Glow effect around modal */
+.modal-content:hover {
+    box-shadow: 0 0 45px rgba(31, 95, 159, 0.6);
+    transition: 0.4s ease;
+}
+
+/* Modal input styling */
+.modal-content .form-control {
+    border-radius: 12px;
+    border: 1px solid #d6e4f5;
+    transition: 0.3s ease;
+}
+
+/* Input focus glow */
+.modal-content .form-control:focus {
+    border-color: #2ca3d5;
+    box-shadow: 0 0 10px rgba(44, 163, 213, 0.6);
+}
+
+/* Submit button glow */
+.modal-content .login-btn {
+    background: linear-gradient(to right, #1f5f9f, #2ca3d5);
+    border-radius: 12px;
+    transition: 0.4s ease;
+}
+
+/* Button hover glowing animation */
+.modal-content .login-btn:hover {
+    box-shadow: 0 0 20px rgba(44, 163, 213, 0.8);
+    transform: scale(1.03);
+}
+
+/* Fix registration modal text color */
+.modal-content {
+    color: #000 !important;
+}
+
+.modal-content label {
+    color: #000 !important;
+}
+
+.modal-content h4 {
+    color: #000 !important;
+}
+
+.modal-content small {
+    color: red !important;
+}
+.modal-content .form-control {
+    color: #000 !important;
+}
+
+.modal-content .form-control:focus {
+    color: #000 !important;
+}
+/* Remove Microsoft Edge default password reveal icon */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+/* Remove Chrome autofill eye (if any) */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+}
+/* Remove Microsoft Edge default password reveal icon */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+/* Remove Chrome autofill eye (if any) */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+}
+

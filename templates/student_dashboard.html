@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TechNova | Student Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    background-size:400% 400%;
+    animation:bgMove 15s ease infinite;
+    color:white;
+}
+
+@keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.navbar{
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid rgba(0,255,255,0.3);
+}
+
+.stat-card{
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    color:white;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-blue{background:linear-gradient(90deg,#00416A,#00B4DB);}
+.stat-green{background:linear-gradient(90deg,#11998e,#38ef7d);}
+.stat-orange{background:linear-gradient(90deg,#ff512f,#dd2476);}
+.stat-purple{background:linear-gradient(90deg,#654ea3,#eaafc8);}
+
+.glass-box{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    border-radius:20px;
+    padding:25px;
+    margin-top:25px;
+    box-shadow:0 0 30px rgba(0,255,255,0.15);
+}
+
+.table-dark{
+    background:transparent;
+}
+
+.btn-apply{
+    background:linear-gradient(90deg,#00f5ff,#a100ff);
+    border:none;
+    color:white;
+    font-weight:600;
+}
+
+.btn-apply:hover{
+    box-shadow:0 0 15px #00f5ff;
+}
+
+.status-shortlisted{color:#ffc107;}
+.status-selected{color:#28a745;}
+.status-rejected{color:#dc3545;}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark px-4">
+    <span class="navbar-brand">
+        University of <strong>TechNova</strong> | Student Portal
+    </span>
+
+    <div>
+        <a href="{{ url_for('edit_profile') }}" class="btn btn-warning btn-sm me-2">
+            Edit Profile
+        </a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">
+            Logout
+        </a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- STAT CARDS -->
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="stat-card stat-blue">
+                Approved Drives
+                <h2>{{ approved_drives|length }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card stat-green">
+                Applied Drives
+                <h2>{{ applied_drives|length }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card stat-orange">
+                Shortlisted
+                <h2>
+                    {{ applied_drives|selectattr(1,"equalto","Shortlisted")|list|length }}
+                </h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card stat-purple">
+                Selected
+                <h2>
+                    {{ applied_drives|selectattr(1,"equalto","Selected")|list|length }}
+                </h2>
+            </div>
+        </div>
+
+    </div>
+    <!-- RESUME SECTION -->
+<div class="glass-box">
+    <h4>Your Resume</h4>
+
+    {% if resume_link %}
+        <a href="{{ url_for('static', filename='resumes/' + resume_link) }}"
+           class="btn btn-info btn-sm"
+           target="_blank">
+           View Uploaded Resume
+        </a>
+    {% else %}
+        <p>No resume uploaded.</p>
+
+        <a href="{{ url_for('edit_profile') }}"
+           class="btn btn-warning btn-sm">
+           Upload Resume
+        </a>
+    {% endif %}
+
+</div>
+
+    <!-- DRIVE REGISTRATION -->
+<div class="glass-box">
+
+<h4>Drive Registration</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Drive ID</th>
+<th>Company ID</th>
+<th>Register By</th>
+<th>Company</th>
+<th>Streams Eligible</th>
+<th>Job Profile</th>
+<th>Status</th>
+<th>Register</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for drive in approved_drives %}
+
+<tr>
+
+<td>{{ drive[1] }}</td> <!-- Drive ID -->
+<td>{{ drive[2] }}</td> <!-- Company ID -->
+<td>{{ drive[3] }}</td> <!-- Deadline -->
+<td>{{ drive[4] }}</td> <!-- Company -->
+<td>{{ drive[5] }}</td> <!-- Eligibility -->
+<td>{{ drive[6] }}</td> <!-- Job Title -->
+
+<td>
+{% if drive[7] == "Closed" %}
+<span class="badge bg-danger">Closed</span>
+{% else %}
+<span class="badge bg-success">Open</span>
+{% endif %}
+</td>
+
+<td>
+
+{% if drive[7] == "Closed" %}
+
+Closed
+
+{% elif drive[0] in applied_ids %}
+
+<span class="badge bg-info">Already Registered</span>
+
+{% else %}
+
+<button class="btn btn-apply btn-sm"
+data-bs-toggle="modal"
+data-bs-target="#driveModal{{ drive[0] }}">
+Register
+</button>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="7">No Drives Available</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+
+
+
+
+    <!-- APPLICATION STATUS -->
+    <div class="glass-box">
+        <h4>Your Application Status</h4>
+
+        <table class="table table-dark mt-3">
+            <thead>
+                <tr>
+                <th>Application ID</th>
+                <th>Drive ID</th>
+                <th>Company</th>
+                <th>Applied Date</th>
+                <th>Result</th>
+                </tr>
+                </thead>
+
+            <tbody>
+                {% for app in applied_drives %}
+              <tr>
+
+                    <td>{{ app[0] }}</td>   <!-- Application ID -->
+                    <td>{{ app[2] }}</td>   <!-- Drive Code -->
+                    <td>{{ app[3] }}</td>   <!-- Company -->
+                    <td>{{ app[5] }}</td>   <!-- Applied Date -->
+
+                    <td>
+                    {% if app[6] == "Shortlisted" %}
+                    <span class="status-shortlisted">Shortlisted</span>
+
+                    {% elif app[6] == "Selected" %}
+                    <span class="status-selected">Selected</span>
+
+                    {% elif app[6] == "Rejected" %}
+                    <span class="status-rejected">Rejected</span>
+
+                    {% else %}
+                    Registered
+                    {% endif %}
+                    </td>
+
+                    </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3">No Applications Yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+
+</div>
+
+<!-- APPLICATION STATUS END -->
+
+{% for drive in approved_drives %}
+
+<div class="modal fade" id="driveModal{{ drive[0] }}" tabindex="-1">
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+<div class="modal-content bg-dark text-white">
+
+<div class="modal-header">
+<h5 class="modal-title">Job Description</h5>
+
+<button type="button"
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<p><b>Company:</b> {{ drive[3] }}</p>
+<p><b>Job Title:</b> {{ drive[5] }}</p>
+<p><b>Eligibility:</b> {{ drive[4] }}</p>
+
+<hr>
+
+<p>{{ drive[8] }}</p>
+
+</div>
+
+<div class="modal-footer">
+
+{% if drive[0] in applied_ids %}
+
+<button class="btn btn-secondary" disabled>
+Already Applied
+</button>
+
+{% else %}
+
+<a href="{{ url_for('apply_drive', drive_id=drive[0]) }}"
+class="btn btn-success">
+Apply
+</a>
+
+{% endif %}
+
+<button class="btn btn-secondary"
+data-bs-dismiss="modal">
+Cancel
+</button>
+
+</div>
+
+</div>
+</div>
+</div>
+
+{% endfor %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

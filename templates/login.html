@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>University of TechNova</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.password-wrapper {
+    position: relative;
+}
+
+.password-input {
+    padding-right: 45px;
+}
+
+.toggle-checkbox {
+    display: none;
+}
+
+
+.toggle-eye {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #ccc;
+}
+
+.toggle-checkbox:checked + .toggle-eye + .password-input,
+.toggle-checkbox:checked ~ .password-input {
+    -webkit-text-security: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-wrapper">
+
+<!-- TOP HEADER -->
+<div class="top-header text-center">
+    <img src="{{ url_for('static', filename='images/technova_logo.png') }}" class="logo">
+    <h1>University of <span>TechNova</span></h1>
+    <p>Innovate. Inspire. Succeed.</p>
+</div>
+
+<!-- MAIN SECTION -->
+<div class="container main-section">
+    <div class="row align-items-center">
+
+        <!-- LEFT SLIDER -->
+        <div class="col-md-6">
+            <div id="carouselExample" class="carousel slide slider-card" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{ url_for('static', filename='images/slide1.png') }}" 
+                             class="d-block w-100 slide-img">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{ url_for('static', filename='images/slide2.png') }}" 
+                             class="d-block w-100 slide-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT LOGIN -->
+        <div class="col-md-6">
+            <div class="login-card">
+
+                <form method="POST" autocomplete="off">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>Log in</h4>
+
+                        <select class="form-select dropdown-style"
+                                name="role"
+                                onchange="this.form.submit()">
+
+                            <option value="company" {% if role == "company" %}selected{% endif %}>
+                                Company Login
+                            </option>
+
+                            <option value="student" {% if role == "student" %}selected{% endif %}>
+                                Student Login
+                            </option>
+                        </select>
+
+                        <input type="hidden" name="role_select" value="1">
+                    </div>
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        {% if role == "company" %}
+                        <label class="form-label">Company ID</label>
+                    {% else %}
+                        <label class="form-label">Gmail ID</label>
+                    {% endif %}
+                        {% if role == "company" %}
+                            <input type="text"
+                                   name="username"
+                                   class="form-control"
+                                   placeholder="Enter Company ID"
+                                   autocomplete="off"
+                                   required>
+                        {% else %}
+                            <input type="email"
+                                   name="username"
+                                   class="form-control"
+                                   placeholder="Enter Gmail ID"
+                                   autocomplete="off"
+                                   required>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                <!-- Password -->
+<div class="mb-3 position-relative">
+    <label class="form-label">Password</label>
+
+    <input type="password"
+           id="loginPassword"
+           name="password"
+           class="form-control"
+           placeholder="Enter Password"
+           required>
+
+    <i class="fa fa-eye position-absolute"
+       style="right:15px; top:42px; cursor:pointer;"
+       onclick="togglePassword()"></i>
+</div>
+  
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <a href="?open=register&role={{ role }}">
+                            New User Register
+                        </a>
+                        <a href="#">Forget Password?</a>
+                    </div>
+
+                    <button type="submit"
+                            name="login_btn"
+                            class="btn login-btn w-100">
+                        Login
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+<!-- ============================= -->
+<!-- REGISTRATION MODAL -->
+<!-- ============================= -->
+
+<div class="modal fade" id="registerModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content p-4">
+
+      <h4 class="text-center mb-3">Register</h4>
+
+      <form method="POST" action="{{ url_for('register') }}">
+
+        <input type="hidden" name="role" value="{{ role }}">
+
+        {% if role == "student" %}
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Roll Number</label>
+                <input type="text" name="roll_no" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Current Address</label>
+                <input type="text" name="address" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="text" name="phone" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Gmail ID</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="mb-3 position-relative">
+    <label class="form-label">Create Password</label>
+
+    <input type="password"
+           id="registerPassword"
+           name="password"
+           class="form-control"
+           placeholder="Create Password"
+           required>
+
+    <i class="fa fa-eye position-absolute"
+       style="right:15px; top:42px; cursor:pointer;"
+       onclick="toggleRegisterPassword()"></i>
+
+    <small class="text-danger">
+        Must contain 1 uppercase, 1 lowercase, 1 number and 1 special character.
+    </small>
+</div>
+
+
+  {% elif role == "company" %}
+
+<div class="mb-3">
+    <label class="form-label">Company Name</label>
+    <input type="text"
+           name="company_name"
+           class="form-control"
+           placeholder="Enter Company Name"
+           required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Company Unique ID (Numbers Only)</label>
+    <input type="number"
+           name="company_id"
+           class="form-control"
+           placeholder="Enter Unique Company ID"
+           required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Company Email</label>
+    <input type="email"
+           name="company_email"
+           class="form-control"
+           placeholder="Enter Company Email"
+           required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Contact Number</label>
+    <input type="text"
+           name="contact_number"
+           class="form-control"
+           placeholder="Enter Contact Number"
+           required>
+    </div>
+    <div class="mb-3">
+    <label class="form-label">HR Email</label>
+    <input type="email" name="hr_email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+    <label class="form-label">Company Website</label>
+    <input type="url" name="company_website" class="form-control">
+    </div>
+
+<div class="mb-3 position-relative">
+    <label class="form-label">Create Password</label>
+
+    <input type="password"
+           id="registerPassword"
+           name="password"
+           class="form-control"
+           placeholder="Create Password"
+           required>
+
+    <i class="fa fa-eye position-absolute"
+       style="right:15px; top:42px; cursor:pointer;"
+       onclick="toggleRegisterPassword()"></i>
+
+    <small class="text-danger">
+        Must contain 1 uppercase, 1 lowercase, 1 number and 1 special character.
+    </small>
+</div>
+
+{% endif %}
+
+
+        <button type="submit" class="btn login-btn w-100">
+            Register
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% if open_modal == "register" %}
+<script>
+window.onload = function() {
+    var myModal = new bootstrap.Modal(document.getElementById('registerModal'));
+    myModal.show();
+};
+
+</script>
+{% endif %}
+<script>
+function togglePassword() {
+    const pass = document.getElementById("loginPassword");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+
+function toggleRegisterPassword() {
+    const pass = document.getElementById("registerPassword");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+</script>
+
+</body>
+</html>

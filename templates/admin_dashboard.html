@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TechNova | Admin Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+background-size:400% 400%;
+animation:bgMove 15s ease infinite;
+color:white;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.navbar{
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(15px);
+border-bottom:1px solid rgba(0,255,255,0.3);
+}
+
+.stat-card{
+border-radius:15px;
+padding:25px;
+text-align:center;
+font-weight:600;
+transition:0.3s;
+color:white;
+}
+
+.stat-card:hover{
+transform:translateY(-5px);
+}
+
+.stat-blue{background:linear-gradient(90deg,#00416A,#00B4DB);}
+.stat-purple{background:linear-gradient(90deg,#654ea3,#eaafc8);}
+.stat-green{background:linear-gradient(90deg,#11998e,#38ef7d);}
+.stat-red{background:linear-gradient(90deg,#ff512f,#dd2476);}
+
+.glass-box{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+border-radius:20px;
+padding:25px;
+margin-top:25px;
+box-shadow:0 0 30px rgba(0,255,255,0.15);
+}
+
+.search-box{
+display:flex;
+gap:10px;
+}
+
+.search-box input{
+background:rgba(255,255,255,0.1);
+border:none;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark px-4">
+<span class="navbar-brand">
+University of <strong>TechNova</strong> | Admin Panel
+</span>
+
+<a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">
+Logout
+</a>
+</nav>
+
+<div class="container mt-4">
+
+<div class="row">
+
+<div class="col-md-3">
+<div class="stat-card stat-blue">
+Total Students
+<h2>{{ total_students }}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="stat-card stat-purple">
+Total Companies
+<h2>{{ total_companies }}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="stat-card stat-green">
+Placement Drives
+<h2>{{ total_drives }}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="stat-card stat-red">
+Applications
+<h2>{{ total_applications }}</h2>
+</div>
+</div>
+
+</div>
+
+<div class="row mt-4">
+
+<div class="col-md-6">
+<div class="stat-card stat-green">
+Students Placed
+<h2>{{ placed_students }}</h2>
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="stat-card stat-purple">
+Placement Percentage
+<h2>{{ placement_percentage }}%</h2>
+</div>
+</div>
+
+</div>
+
+
+<div class="glass-box">
+
+<h4>Search Students</h4>
+
+<form method="GET" action="{{ url_for('dashboard') }}" class="search-box mt-3">
+
+<input type="text"
+name="search_student"
+class="form-control"
+placeholder="Search Student by Name or Roll No">
+
+<button class="btn btn-info">
+Search Student
+</button>
+
+</form>
+
+</div>
+
+
+<div class="glass-box">
+
+<h4>Search Companies</h4>
+
+<form method="GET" action="{{ url_for('dashboard') }}" class="search-box mt-3">
+
+<input type="text"
+name="search_company"
+class="form-control"
+placeholder="Search Company by Name or Company ID">
+
+<button class="btn btn-warning">
+Search Company
+</button>
+
+</form>
+
+</div>
+
+
+{% if students %}
+
+<div class="glass-box">
+
+<h4>Student Search Results</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Student Name</th>
+<th>Roll No</th>
+<th>Status</th>
+<th>Resume</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for s in students %}
+
+<tr>
+
+<td>{{ s[0] }}</td>
+<td>{{ s[1] }}</td>
+
+<td>
+{% if s[3] == 1 %}
+<span class="text-danger">Blacklisted</span>
+{% else %}
+<span class="text-success">Active</span>
+{% endif %}
+</td>
+
+<td>
+{% if s[4] %}
+<a href="{{ url_for('static', filename='resumes/' + s[4]) }}"
+class="btn btn-info btn-sm" target="_blank">
+View Resume
+</a>
+{% else %}
+No Resume
+{% endif %}
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endif %}
+
+
+<div class="glass-box">
+
+<h4>Top Hiring Companies</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Company</th>
+<th>Students Hired</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in top_companies %}
+
+<tr>
+<td>{{ c[0] }}</td>
+<td>{{ c[1] }}</td>
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="2">No placements yet</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+{% if companies %}
+
+<div class="glass-box">
+
+<h4>Company Search Results</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Company Name</th>
+<th>Company ID</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in companies %}
+
+<tr>
+
+<td>{{ c[0] }}</td>
+<td>{{ c[1] }}</td>
+<td>{{ c[2] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endif %}
+
+<div class="glass-box">
+
+<h4>Pending Company Approvals</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Company Name</th>
+<th>HR Email</th>
+<th>Website</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for company in pending_companies %}
+
+<tr>
+
+<td>{{ company[1] }}</td>
+
+<td>{{ company[6] }}</td>
+
+<td>
+<a href="{{ company[7] }}" target="_blank">
+Visit
+</a>
+</td>
+
+<td>
+
+<a href="{{ url_for('approve_company', id=company[0]) }}"
+class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="{{ url_for('reject_company', id=company[0]) }}"
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="2">No Pending Companies</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+<div class="glass-box">
+
+<h4>Company History</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Company Name</th>
+<th>Company ID</th>
+<th>HR Email</th>
+<th>Website</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in company_history %}
+
+<tr>
+
+<td>{{ c[1] }}</td>
+<td>{{ c[2] }}</td>
+<td>{{ c[6] }}</td>
+
+<td>
+<a href="{{ c[7] }}" target="_blank">
+Visit
+</a>
+</td>
+
+<td>
+{% if c[3] == "Approved" %}
+<span class="text-success fw-bold">Active</span>
+{% elif c[3] == "Blacklisted" %}
+<span class="text-danger fw-bold">Blacklisted</span>
+{% endif %}
+</td>
+
+<td>
+
+{% if c[3] == "Approved" %}
+
+<a href="{{ url_for('blacklist_company', id=c[0]) }}"
+class="btn btn-danger btn-sm">
+Blacklist
+</a>
+
+{% else %}
+
+<a href="{{ url_for('activate_company', id=c[0]) }}"
+class="btn btn-success btn-sm">
+Activate
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="glass-box">
+    
+
+<h4>Pending Drive Approvals</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Drive ID</th>
+<th>Company</th>
+<th>Job Title</th>
+<th>Job Description</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for drive in pending_drives %}
+
+<tr>
+
+<td>{{ drive[1] }}</td>   <!-- Drive ID -->
+<td>{{ drive[2] }}</td>   <!-- Company -->
+<td>{{ drive[3] }}</td>   <!-- Job Title -->
+<td>
+<button class="btn btn-info btn-sm"
+data-bs-toggle="modal"
+data-bs-target="#jobModal{{ drive[0] }}">
+View
+</button>
+</td>
+
+<td>
+
+{% if drive[5] == "Pending" %}
+
+<a href="{{ url_for('approve_drive', id=drive[0]) }}"
+class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="{{ url_for('reject_drive', id=drive[0]) }}"
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+{% elif drive[5] == "Approved" %}
+
+<span class="text-success fw-bold">Approved</span>
+
+{% elif drive[5] == "Closed" %}
+
+<span class="text-danger fw-bold">Rejected</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="4">No Pending Drives</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="glass-box">
+
+<h4>All Registered Students</h4>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Email</th>
+<th>Resume</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for s in all_students %}
+
+<tr>
+
+<td>{{ s[1] }}</td>
+<td>{{ s[2] }}</td>
+<td>{{ s[3] }}</td>
+
+<td>
+{% if s[4] %}
+<a href="{{ url_for('static', filename='resumes/' + s[4]) }}"
+class="btn btn-info btn-sm" target="_blank">
+View Resume
+</a>
+{% else %}
+No Resume
+{% endif %}
+</td>
+
+<td>
+{% if s[5] == 1 %}
+<span class="text-danger">Blacklisted</span>
+{% else %}
+<span class="text-success">Active</span>
+{% endif %}
+</td>
+
+<td>
+
+{% if s[5] == 0 %}
+
+<a href="{{ url_for('blacklist_user', user_id=s[6]) }}"
+class="btn btn-danger btn-sm">
+Blacklist
+</a>
+
+{% else %}
+
+<a href="{{ url_for('activate_user', user_id=s[6]) }}"
+class="btn btn-success btn-sm">
+Activate
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="glass-box">
+
+<h4>Applications Per Company</h4>
+
+<form method="GET" action="{{ url_for('dashboard') }}" class="search-box mt-3">
+
+<input type="text"
+name="search_app"
+class="form-control"
+placeholder="Search by Student / Roll / Company / Drive ID">
+
+<button class="btn btn-info">
+Search
+</button>
+
+</form>
+
+<table class="table table-dark mt-3">
+
+<thead>
+<tr>
+ <th>Application ID</th>
+<th>Student Name</th>
+<th>Roll No</th>
+<th>Company</th>
+<th>Drive ID</th>
+<th>Applied Date</th>
+<th>Resume</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for app in applications_per_company %}
+
+<tr>
+
+<td>{{ app[0] }}</td> <!-- Application ID -->
+<td>{{ app[1] }}</td> <!-- Student Name -->
+<td>{{ app[2] }}</td> <!-- Roll No -->
+<td>{{ app[3] }}</td> <!-- Company -->
+<td>{{ app[4] }}</td> <!-- Drive ID -->
+<td>{{ app[5] }}</td> <!-- Applied Date -->
+
+<td>
+{% if app[6] %}
+<a href="{{ url_for('static', filename='resumes/' + app[6]) }}"
+class="btn btn-info btn-sm" target="_blank">
+View
+</a>
+{% else %}
+No Resume
+{% endif %}
+</td>
+
+<td>{{ app[7] }}</td> <!-- Status -->
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="6">No Applications</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+{% for drive in pending_drives %}
+
+<div class="modal fade" id="jobModal{{ drive[0] }}" tabindex="-1">
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+<div class="modal-content bg-dark text-white">
+
+<div class="modal-header">
+
+<h5 class="modal-title">
+{{ drive[1] }} - Job Description
+</h5>
+
+<button type="button"
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+</button>
+
+</div>
+
+<div class="modal-body" style="max-height:300px; overflow-y:auto;">
+
+<p>{{ drive[4] }}</p>
+
+</div>
+
+
+
+</div>
+</div>
+</div>
+
+{% endfor %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+</body>
+</html>

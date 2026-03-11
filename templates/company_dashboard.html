@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TechNova | Company Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    background-size:400% 400%;
+    animation:bgMove 15s ease infinite;
+    color:white;
+}
+
+@keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.navbar{
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid rgba(0,255,255,0.3);
+}
+
+.stat-card{
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-blue{background:linear-gradient(90deg,#00416A,#00B4DB);}
+.stat-green{background:linear-gradient(90deg,#11998e,#38ef7d);}
+.stat-red{background:linear-gradient(90deg,#ff512f,#dd2476);}
+
+.glass-box{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    border-radius:20px;
+    padding:25px;
+    margin-top:25px;
+    box-shadow:0 0 30px rgba(0,255,255,0.15);
+}
+
+.btn-neon{
+    background:linear-gradient(90deg,#00f5ff,#a100ff);
+    border:none;
+    color:white;
+    font-weight:600;
+}
+
+.btn-neon:hover{
+    box-shadow:0 0 15px #00f5ff;
+}
+
+.table-dark{
+    background:transparent;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark px-4">
+
+<div class="d-flex align-items-center gap-3">
+
+<span class="navbar-brand">
+Company ID: {{ company[3] }}
+</span>
+
+<a href="{{ url_for('hr_details') }}"
+class="btn btn-info btn-sm">
+HR Details
+</a>
+
+</div>
+
+<a href="{{ url_for('logout') }}"
+class="btn btn-danger btn-sm">
+Logout
+</a>
+
+</nav>
+
+<div class="container mt-4">
+    {% if error %}
+<div class="alert alert-danger text-center">
+{{ error }}
+</div>
+{% endif %}
+
+    <!-- STAT CARDS -->
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="stat-card stat-blue">
+                Active Drives
+                <h2>{{ total_drives }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card stat-green">
+                Total Applicants
+                <h2>{{ total_applicants }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card stat-red">
+                Approval Status
+                <h5>{{ company[8] }}</h5>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DRIVES SECTION -->
+  <div class="glass-box">
+<div class="d-flex justify-content-between align-items-center">
+<h4>Your Placement Drives</h4>
+
+{% if company["approval_status"] == "Approved" %}
+<a href="{{ url_for('create_drive') }}" class="btn btn-neon">
+Create Drive
+</a>
+{% else %}
+<button class="btn btn-secondary" disabled>
+Create Drive Disabled (Blacklisted)
+</button>
+{% endif %}
+
+</div>
+
+<table class="table table-dark mt-3">
+<thead>
+<tr>
+<th>Drive ID</th>
+<th>Job Title</th>
+<th>Status</th>
+<th>Applicants</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for d in drives %}
+<tr>
+
+<td>{{ d[1] }}</td>
+<td>{{ d[2] }}</td>
+<td>
+
+{% if d[3] == "Approved" %}
+<span class="badge bg-success">Approved</span>
+
+{% elif d[3] == "Closed" %}
+<span class="badge bg-secondary">Closed</span>
+
+{% elif d[3] == "Rejected" %}
+<span class="badge bg-danger">Rejected</span>
+
+{% elif d[3] == "Pending" %}
+<span class="badge bg-warning">Pending</span>
+
+{% endif %}
+
+</td>
+<td>{{ d[4] }}</td> 
+
+<td>
+
+<a href="{{ url_for('edit_drive', drive_id=d[0]) }}"
+class="btn btn-warning btn-sm">
+Edit
+</a>
+
+{% if d[3] == "Approved" %}
+
+<a href="{{ url_for('close_drive', drive_id=d[0]) }}"
+class="btn btn-danger btn-sm">
+Close
+</a>
+
+{% elif d[3] == "Closed" %}
+
+<span class="badge bg-secondary">Closed</span>
+
+{% elif d[3] == "Rejected" %}
+
+<span class="badge bg-danger">Rejected</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="5">No Drives Created</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+    <!-- APPLICATIONS SECTION -->
+    <div class="glass-box">
+        <h4>Student Applications</h4>
+
+        <table class="table table-dark mt-3">
+          <thead>
+                <tr>
+                 <th>Application ID</th>
+                <th>Name</th>
+                <th>Roll No</th>
+                <th>Drive ID</th>
+                <th>Job Title</th>
+                <th>Applied Date</th>
+                <th>Status</th>
+                <th>Resume</th>
+                <th>Action</th>
+                </tr>
+         </thead>
+
+            <tbody>
+                {% for a in applications %}
+                <tr>
+                    
+                        <td>{{ a[1] }}</td> <!-- Application ID -->
+                        <td>{{ a[2] }}</td> <!-- Student Name -->
+                        <td>{{ a[3] }}</td> <!-- Roll No -->
+                        <td>{{ a[4] }}</td> <!-- Drive ID -->
+                        <td>{{ a[5] }}</td> <!-- Job Title -->
+                        <td>{{ a[6] }}</td> <!-- Applied Date -->
+                        <td>{{ a[7] }}</td> <!-- Status -->
+
+                       <td>
+                        {% if a[8] %}
+                        <a href="{{ url_for('static', filename='resumes/' + a[8]) }}"
+                        class="btn btn-info btn-sm" target="_blank">
+                        View
+                        </a>
+
+                        <a href="{{ url_for('static', filename='resumes/' + a[8]) }}"
+                        class="btn btn-secondary btn-sm"
+                        download>
+                        Download
+                        </a>
+
+                        {% else %}
+                        No Resume
+                        {% endif %}
+                        </td>
+
+                        <td>
+                            <!-- STATUS -->
+                            {% if a[7] == "Registered" %}
+                            <span class="badge bg-warning">Registered</span>
+
+                            {% elif a[7] == "Shortlisted" %}
+                            <span class="badge bg-info">Shortlisted</span>
+
+                            {% elif a[7] == "Selected" %}
+                            <span class="badge bg-success">Selected</span>
+
+                            {% elif a[7] == "Rejected" %}
+                            <span class="badge bg-danger">Rejected</span>
+
+                            {% endif %}
+
+                            <br><br>
+
+                            <!-- ACTION BUTTONS -->
+                            {% if a[7] == "Registered" %}
+
+                            <a href="{{ url_for('update_application', id=a[0], status='Shortlisted') }}"
+                            class="btn btn-warning btn-sm">
+                            Shortlist
+                            </a>
+
+                            <a href="{{ url_for('update_application', id=a[0], status='Selected') }}"
+                            class="btn btn-success btn-sm">
+                            Select
+                            </a>
+
+                            <a href="{{ url_for('update_application', id=a[0], status='Rejected') }}"
+                            class="btn btn-danger btn-sm">
+                            Reject
+                            </a>
+
+                            {% endif %}
+
+                            </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No Applications Yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
