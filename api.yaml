@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: TechNova Placement Portal API
+  version: 1.0.0
+  description: API endpoints for Placement Portal Application
+
+paths:
+
+  /:
+    get:
+      summary: Login page
+      description: Student and Company login page
+    post:
+      summary: Authenticate student or company login
+
+  /admin-login:
+    get:
+      summary: Admin login page
+    post:
+      summary: Authenticate admin user
+
+  /register:
+    post:
+      summary: Register new student or company
+
+  /dashboard:
+    get:
+      summary: Redirect user to role-based dashboard
+
+  /create-drive:
+    get:
+      summary: Show create drive page
+    post:
+      summary: Create placement drive
+
+  /apply/{drive_id}:
+    get:
+      summary: Apply for placement drive
+
+  /update-application/{id}/{status}:
+    get:
+      summary: Update student application status
+
+  /approve_company/{id}:
+    get:
+      summary: Approve company registration
+
+  /approve_drive/{id}:
+    get:
+      summary: Approve placement drive
+
+  /logout:
+    get:
+      summary: Logout user
